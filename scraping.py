@@ -10,7 +10,7 @@ option.add_argument("--headless")
 service = Service("chromedriver.exe")
 driver = webdriver.Chrome(service=service, options=option)
 
-shopee_link = "https://shopee.co.id/search?keyword=macbook"
+shopee_link = "https://shopee.co.id/search?keyword=laptop"
 driver.set_window_size(1300, 800)
 driver.get(shopee_link)
 
@@ -28,17 +28,17 @@ content = driver.page_source
 driver.quit()
 
 data = BeautifulSoup(content, "html.parser")
-# print(data.encode("utf-8"))
 
 i = 1
 base_url = "https://shopee.co.id"
 
-list_name, list_frame, list_price, list_link, list_sold, list_location = [], [], [], [], [], []
+list_name, list_price, list_link, list_sold, list_location = [], [], [], [], []
+
+#Scraping Process
 
 for area in data.find_all("div", class_="col-xs-2-4 shopee-search-item-result__item"):
     print("processing data to-" + str(i))
     name = area.find("div", class_="ie3A+n bM+7UW Cve6sh").get_text()
-    frame = area.find('img')['src']
     price = area.find("span", class_="ZEgDH9").get_text()
     link = base_url + area.find("a")["href"]
     sold = area.find("div", class_="r6HknA uEPGHT")
@@ -47,7 +47,6 @@ for area in data.find_all("div", class_="col-xs-2-4 shopee-search-item-result__i
     location = area.find("div", class_="zGGwiV").get_text()
 
     list_name.append(name)
-    list_frame.append(frame)
     list_price.append(price)
     list_link.append(link)
     list_sold.append(sold)
@@ -55,8 +54,10 @@ for area in data.find_all("div", class_="col-xs-2-4 shopee-search-item-result__i
     i += 1
     print("------")
 
-df = pd.DataFrame({"Name": list_name, "Frame": list_frame, "Price": list_price, "Link": list_link, "Sold": list_sold,
+
+#Convert to Excel
+df = pd.DataFrame({"Name": list_name, "Price": list_price, "Link": list_link, "Sold": list_sold,
                    "Location": list_location})
-writer: ExcelWriter = pd.ExcelWriter("Result/Macbook.xlsx")
+writer: ExcelWriter = pd.ExcelWriter("Result/Laptop.xlsx")
 df.to_excel(writer, "Sheet1", index=False)
 writer.save()
