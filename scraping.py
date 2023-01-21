@@ -57,6 +57,6 @@ for area in data.find_all("div", class_="col-xs-2-4 shopee-search-item-result__i
 
 df = pd.DataFrame({"Name": list_name, "Frame": list_frame, "Price": list_price, "Link": list_link, "Sold": list_sold,
                    "Location": list_location})
-writer: ExcelWriter = pd.ExcelWriter("Macbook.xlsx")
+writer: ExcelWriter = pd.ExcelWriter("Result/Macbook.xlsx")
 df.to_excel(writer, "Sheet1", index=False)
 writer.save()
