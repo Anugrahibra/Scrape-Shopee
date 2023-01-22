@@ -1,3 +1,4 @@
+#Import Packages
 from pandas import ExcelWriter
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -5,11 +6,13 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import time
 
+#Setup WebDriver
 option = webdriver.ChromeOptions()
 option.add_argument("--headless")
 service = Service("chromedriver.exe")
 driver = webdriver.Chrome(service=service, options=option)
 
+#Scraping Data
 shopee_link = "https://shopee.co.id/search?keyword=laptop"
 driver.set_window_size(1300, 800)
 driver.get(shopee_link)
@@ -29,12 +32,12 @@ driver.quit()
 
 data = BeautifulSoup(content, "html.parser")
 
+#Extracting Data
 i = 1
 base_url = "https://shopee.co.id"
 
 list_name, list_price, list_link, list_sold, list_location = [], [], [], [], []
 
-#Scraping Process
 
 for area in data.find_all("div", class_="col-xs-2-4 shopee-search-item-result__item"):
     print("processing data to-" + str(i))
@@ -54,8 +57,7 @@ for area in data.find_all("div", class_="col-xs-2-4 shopee-search-item-result__i
     i += 1
     print("------")
 
-
-#Convert to Excel
+#Storing Data
 df = pd.DataFrame({"Name": list_name, "Price": list_price, "Link": list_link, "Sold": list_sold,
                    "Location": list_location})
 writer: ExcelWriter = pd.ExcelWriter("Result/Laptop.xlsx")
